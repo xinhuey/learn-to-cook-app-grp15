@@ -1,0 +1,15 @@
+{
+  "name": "learn-to-cook-api",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy --minify"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.49.8",
+    "hono": "^4.7.10",
+    "jose": "^6.0.11"
+  },
+  "devDependencies": {
+    "wrangler": "^4.4.0"
+  }
+}
