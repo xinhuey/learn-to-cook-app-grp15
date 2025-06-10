@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:padding="16dp"
+    android:background="@color/white"
+    tools:context=".LoginActivity">
+
+    <!-- Title of the login page -->
+    <TextView
+        android:id="@+id/textViewTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/welcome"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:layout_marginTop="64dp"
+        android:layout_marginBottom="48dp"
+        android:fontFamily="sans-serif-medium"/>
+
+    <!-- Input field for Username or Email -->
+    <EditText
+        android:id="@+id/editTextUsername"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/email"
+        android:inputType="textEmailAddress"
+        android:padding="12dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/rounded_edittext_bg"
+        android:textColorHint="@color/black"
+        android:textColor="@color/black"
+        android:textSize="16sp"/>
+
+    <!-- Input field for Password -->
+    <EditText
+        android:id="@+id/editTextPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/password"
+        android:inputType="textPassword"
+        android:padding="12dp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/rounded_edittext_bg"
+        android:textColorHint="@color/black"
+        android:textColor="@color/black"
+        android:textSize="16sp"/>
+
+    <!-- Login Button -->
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/buttonLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/login"
+        android:background="@drawable/rounded_button_bg"
+        android:backgroundTint="@color/black"
+        android:backgroundTintMode="src_in"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:padding="12dp"
+        android:layout_marginBottom="24dp"
+        android:elevation="4dp"/>
+
+    <!-- Text for registration link -->
+    <Button
+        android:id="@+id/textViewRegister"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="8dp"
+        style="?android:attr/borderlessButtonStyle"
+        android:text="@string/noAccount"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        android:textStyle="bold|normal" />
+
+</LinearLayout>

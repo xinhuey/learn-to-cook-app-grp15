@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">LearnToCook</string>
+    <string name="noAccount">Don\'t Have an account? Sign up</string>
+    <string name="forgotPassword">Forgot your password?</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="email">Email or Username</string>
+    <string name="welcome">Get Started with LearnToCook</string>
 </resources>
