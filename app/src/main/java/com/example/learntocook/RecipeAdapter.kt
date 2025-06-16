@@ -1,5 +1,6 @@
 package com.example.learntocook
 
+import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -17,6 +18,9 @@ class RecipeAdapter(private val recipes: List<Recipe>) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecipeViewHolder {
         val binding = ItemRecipeBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val params = binding.root.layoutParams
+        params.height = (Resources.getSystem().displayMetrics.heightPixels * 0.5).toInt()
+        binding.root.layoutParams = params
         return RecipeViewHolder(binding)
     }
 
