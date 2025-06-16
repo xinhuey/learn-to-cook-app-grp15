@@ -6,4 +6,5 @@
     <string name="password">Password</string>
     <string name="email">Email or Username</string>
     <string name="welcome">Get Started with LearnToCook</string>
+    <string name="recommended_recipes">Recommended Recipes</string>
 </resources>
