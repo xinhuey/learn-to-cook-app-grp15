@@ -10,7 +10,8 @@
     <TextView
         android:id="@+id/textViewRecipeTitle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
         android:padding="12dp"
         android:textSize="18sp" />
 
