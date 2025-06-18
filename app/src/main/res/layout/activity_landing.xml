@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <ImageButton
+        android:id = "@+id/hamburgerButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_menu"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/nav_hamburger_desc"
+        android:padding="8dp"/>
+
+    <androidx.appcompat.widget.SearchView
+        android:id = "@+id/searchView"
+        android:layout_width = "match_parent"
+        android:layout_height = "wrap_content"
+        android:queryHint="@string/search_hint"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="32dp"
+        android:background= "@drawable/rounded_edittext_bg"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="32dp">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/buttonOne"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/button_one"
+            android:background="@drawable/rounded_button_bg"
+            android:backgroundTint="@color/black"
+            android:backgroundTintMode="src_in"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:padding="12dp"
+            android:layout_marginEnd="8dp"
+            android:elevation="4dp" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/buttonTwo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/button_two"
+            android:background="@drawable/rounded_button_bg"
+            android:backgroundTint="@color/black"
+            android:backgroundTintMode="src_in"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:padding="12dp"
+            android:layout_marginStart="8dp"
+            android:elevation="4dp" />
+
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/textViewHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/recommended_recipes"
+        android:textStyle="bold"
+        android:textSize="24sp"
+        android:layout_marginBottom="16dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewRecipes"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>
