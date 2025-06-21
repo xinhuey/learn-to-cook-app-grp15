@@ -62,19 +62,6 @@
 
     </LinearLayout>
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/button_preferences"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Preferences"
-        android:background="@drawable/rounded_button_bg"
-        android:backgroundTint="@color/black"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        android:padding="12dp"
-        android:layout_marginBottom="24dp"
-        android:elevation="4dp" />
-
     <TextView
         android:id="@+id/textViewHeader"
         android:layout_width="wrap_content"

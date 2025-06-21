@@ -1,5 +1,6 @@
 package com.example.learntocook
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,6 +25,10 @@ class LandingActivity : AppCompatActivity(){
 
         binding.recyclerViewRecipes.layoutManager = LinearLayoutManager(this)
         binding.recyclerViewRecipes.adapter = RecipeAdapter(recipes)
+        binding.preferences.setOnClickListener {
+            val intent = Intent(this, PreferencesActivity::class.java)
+            startActivity(intent)
+        }
 
     }
 }
