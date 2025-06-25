@@ -26,8 +26,10 @@ class LoginActivity: AppCompatActivity() {
             startActivity(Intent(this, LandingActivity::class.java))
 
         }
-        binding.textViewRegister.setOnClickListener{
+        binding.textViewSignUp.setOnClickListener{
             Log.d("LoginActivity", "Navigate to Signup Screen")
+            val intent = Intent(this, SignUpActivity::class.java)
+            startActivity(intent)
         }
     }
 }

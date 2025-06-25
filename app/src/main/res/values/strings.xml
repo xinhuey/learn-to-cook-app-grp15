@@ -1,10 +1,13 @@
 <resources>
     <string name="app_name">LearnToCook</string>
     <string name="noAccount">Don\'t Have an account? Sign up</string>
+    <string name="backtoLogin">Already have an account? Sign in</string>
     <string name="forgotPassword">Forgot your password?</string>
     <string name="login">Login</string>
-    <string name="password">Password</string>
-    <string name="email">Email or Username</string>
+    <string name="name">Enter your name</string>
+    <string name="signup">Sign Up</string>
+    <string name="password">Enter your password</string>
+    <string name="email">Enter your email or username</string>
     <string name="welcome">Get Started with LearnToCook</string>
     <string name="recommended_recipes">Recommended Recipes</string>
     <string name="search_hint">Search Recipes</string>

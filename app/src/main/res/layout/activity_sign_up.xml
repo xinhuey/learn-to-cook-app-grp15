@@ -14,13 +14,27 @@
         android:id="@+id/textViewTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/welcome"
+        android:text="@string/signup"
         android:textSize="25sp"
         android:textStyle="bold"
         android:textColor="@color/black"
         android:layout_marginTop="64dp"
         android:layout_marginBottom="48dp"
         android:fontFamily="sans-serif-medium"/>
+
+    <!-- Input field for Name -->
+    <EditText
+        android:id="@+id/editTextName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/name"
+        android:inputType="textEmailAddress"
+        android:padding="12dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/rounded_edittext_bg"
+        android:textColorHint="@color/black"
+        android:textColor="@color/black"
+        android:textSize="16sp"/>
 
     <!-- Input field for Username or Email -->
     <EditText
@@ -50,12 +64,12 @@
         android:textColor="@color/black"
         android:textSize="16sp"/>
 
-    <!-- Login Button -->
+    <!-- Sign up Button -->
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/buttonLogin"
+        android:id="@+id/buttonSignUp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/login"
+        android:text="@string/signup"
         android:background="@drawable/rounded_button_bg"
         android:backgroundTint="@color/black"
         android:backgroundTintMode="src_in"
@@ -66,16 +80,16 @@
         android:layout_marginBottom="24dp"
         android:elevation="4dp"/>
 
-    <!-- Text for registration link -->
+    <!-- Text for login Link -->
     <TextView
-        android:id="@+id/textViewSignUp"
+        android:id="@+id/textViewLoginLink"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
         android:focusable="true"
         android:padding="8dp"
         style="?android:attr/borderlessButtonStyle"
-        android:text="@string/noAccount"
+        android:text="@string/backtoLogin"
         android:textColor="#000000"
         android:textSize="16sp"
         android:textStyle="bold|normal" />
