@@ -3,4 +3,13 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="red_500">#EF4444</color>
+
+    <!-- App color pallete -->
+    <color name="brand_background">#F1F8E9</color>
+    <color name="chip_unselected_green">#DCEDC8</color>
+    <color name="brand_green">#66BB6A</color>
+    <color name="brand_green_dark">#388E3C</color>
+    <color name="text_primary">#212121</color>
+    <color name="text_on_brand_green">#FFFFFF</color>
+
 </resources>
