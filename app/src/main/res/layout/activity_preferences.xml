@@ -98,5 +98,69 @@
         app:layout_constraintTop_toBottomOf="@id/check_shellfish"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <!-- Cuisine Preferences Section -->
+    <TextView
+        android:id="@+id/text_cuisine_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cuisine Preferences"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@id/check_soy"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chip_group_cuisine"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:chipSpacingHorizontal="8dp"
+        app:layout_constraintTop_toBottomOf="@id/text_cuisine_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip_italian"
+        style="@style/Widget.MaterialComponents.Chip.Choice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Italian"/>
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip_mexican"
+        style="@style/Widget.MaterialComponents.Chip.Choice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mexican"/>
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip_indian"
+        style="@style/Widget.MaterialComponents.Chip.Choice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Indian"/>
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip_japanese"
+        style="@style/Widget.MaterialComponents.Chip.Choice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Japanese"/>
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip_mediterranean"
+        style="@style/Widget.MaterialComponents.Chip.Choice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mediterranean"/>
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip_vegan"
+        style="@style/Widget.MaterialComponents.Chip.Choice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Vegan"/>
+    </com.google.android.material.chip.ChipGroup>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
