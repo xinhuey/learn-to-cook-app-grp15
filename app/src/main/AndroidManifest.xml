@@ -25,6 +25,9 @@
         <activity
             android:name=".LandingActivity"
             android:exported="true" />
+
+        <activity
+            android:name=".PreferencesActivity" />
     </application>
 
 </manifest>

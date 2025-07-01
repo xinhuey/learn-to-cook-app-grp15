@@ -31,11 +31,11 @@
         android:layout_marginBottom="32dp">
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/buttonOne"
+            android:id="@+id/preferences"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/button_one"
+            android:text="@string/preferences"
             android:background="@drawable/rounded_button_bg"
             android:backgroundTint="@color/black"
             android:backgroundTintMode="src_in"
@@ -46,11 +46,11 @@
             android:elevation="4dp" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/buttonTwo"
+            android:id="@+id/ingredients"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/button_two"
+            android:text="@string/ingredients"
             android:background="@drawable/rounded_button_bg"
             android:backgroundTint="@color/black"
             android:backgroundTintMode="src_in"
@@ -61,7 +61,6 @@
             android:elevation="4dp" />
 
     </LinearLayout>
-
 
     <TextView
         android:id="@+id/textViewHeader"
