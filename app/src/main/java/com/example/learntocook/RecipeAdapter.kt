@@ -6,7 +6,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.learntocook.databinding.ItemRecipeBinding
 
-class RecipeAdapter(private val recipes: List<Recipe>) :
+class RecipeAdapter(
+    private val recipes: List<Recipe>,
+    private val onRecipeClick : (Recipe) -> Unit
+) :
     RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder>() {
 
     inner class RecipeViewHolder(private val binding: ItemRecipeBinding) :
@@ -25,7 +28,9 @@ class RecipeAdapter(private val recipes: List<Recipe>) :
     }
 
     override fun onBindViewHolder(holder: RecipeViewHolder, position: Int) {
-        holder.bind(recipes[position])
+        val recipe = recipes[position]
+        holder.bind(recipe)
+        holder.itemView.setOnClickListener{ onRecipeClick(recipe) }
     }
 
     override fun getItemCount() = recipes.size

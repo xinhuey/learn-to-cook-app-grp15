@@ -24,7 +24,11 @@ class LandingActivity : AppCompatActivity(){
         )
 
         binding.recyclerViewRecipes.layoutManager = LinearLayoutManager(this)
-        binding.recyclerViewRecipes.adapter = RecipeAdapter(recipes)
+        binding.recyclerViewRecipes.adapter = RecipeAdapter(recipes) { recipe ->
+            val intent = Intent(this, BlogActivity::class.java)
+            intent.putExtra("recipe_title", recipe.title)
+            startActivity(intent)
+        }
         binding.preferences.setOnClickListener {
             val intent = Intent(this, PreferencesActivity::class.java)
             startActivity(intent)
