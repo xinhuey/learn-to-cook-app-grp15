@@ -1,79 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:padding="16dp">
 
-    <ImageButton
-        android:id = "@+id/hamburgerButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_menu"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="@string/nav_hamburger_desc"
-        android:padding="8dp"/>
+<com.google.android.material.card.MaterialCardView
+    android:id="@+id/hamburgerButton"
+    android:layout_width="48dp"
+    android:layout_height="48dp"
+    android:layout_marginTop="16dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:background="?attr/selectableItemBackgroundBorderless"
 
-    <androidx.appcompat.widget.SearchView
-        android:id = "@+id/searchView"
-        android:layout_width = "match_parent"
-        android:layout_height = "wrap_content"
-        android:queryHint="@string/search_hint"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="32dp"
-        android:background= "@drawable/rounded_edittext_bg"/>
+    app:cardCornerRadius="24dp"
+    app:cardElevation="0dp"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginBottom="32dp">
+<ImageView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="12dp"
+    android:src="@drawable/ic_menu"
+    android:contentDescription="@string/nav_hamburger_desc"
+    app:tint="?attr/colorOnSurface" />
+</com.google.android.material.card.MaterialCardView>
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/preferences"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/preferences"
-            android:background="@drawable/rounded_button_bg"
-            android:backgroundTint="@color/black"
-            android:backgroundTintMode="src_in"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            android:padding="12dp"
-            android:layout_marginEnd="8dp"
-            android:elevation="4dp" />
+<androidx.appcompat.widget.SearchView
+    android:id="@+id/searchView"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:queryHint="@string/search_hint"
+    android:layout_marginTop="16dp"
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/ingredients"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/ingredients"
-            android:background="@drawable/rounded_button_bg"
-            android:backgroundTint="@color/black"
-            android:backgroundTintMode="src_in"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            android:padding="12dp"
-            android:layout_marginStart="8dp"
-            android:elevation="4dp" />
+    android:background="@drawable/rounded_edittext_bg"
+    app:layout_constraintTop_toBottomOf="@id/hamburgerButton"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent" />
 
-    </LinearLayout>
+<LinearLayout
+    android:id="@+id/buttonRow"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center"
 
-    <TextView
-        android:id="@+id/textViewHeader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/recommended_recipes"
-        android:textStyle="bold"
-        android:textSize="24sp"
-        android:layout_marginBottom="16dp" />
+    android:layout_marginTop="32dp"
+    app:layout_constraintTop_toBottomOf="@id/searchView"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewRecipes"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+<androidx.appcompat.widget.AppCompatButton
+    android:id="@+id/preferences"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:text="@string/preferences"
+    android:textColor="@color/black"
+    android:textSize="16sp"
+    android:padding="12dp"
+    android:layout_marginEnd="8dp"
+    android:background="@drawable/button_outline_green"/>
+
+<androidx.appcompat.widget.AppCompatButton
+    android:id="@+id/ingredients"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:text="@string/ingredients"
+    android:textColor = "@color/black"
+    android:textSize="16sp"
+    android:padding="12dp"
+    android:layout_marginStart="8dp"
+    android:background="@drawable/button_outline_green" />
 
 </LinearLayout>
+
+<TextView
+    android:id="@+id/textViewHeader"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/recommended_recipes"
+    android:textStyle="bold"
+    android:textSize="24sp"
+    android:layout_marginTop="32dp"
+    android:layout_marginBottom="16dp"
+    app:layout_constraintTop_toBottomOf="@id/buttonRow"
+    app:layout_constraintStart_toStartOf="parent" />
+
+<androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/recyclerViewRecipes"
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    app:layout_constraintTop_toBottomOf="@id/textViewHeader"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
