@@ -9,15 +9,195 @@
     android:padding="24dp"
     tools:context=".PreferencesActivity">
 
+    <!-- Back Arrow -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/button_back"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="0dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="12dp"
+            android:src="@drawable/ic_arrow_back"
+            android:contentDescription="Back"
+            app:tint="?attr/colorOnSurface" />
+    </com.google.android.material.card.MaterialCardView>
+
     <!-- Screen Title -->
     <TextView
         android:id="@+id/text_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Dietary Preferences"
-        android:textSize="20sp"
+        android:textSize="22sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@id/button_back"
+        app:layout_constraintBottom_toBottomOf="@id/button_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Allergies Section -->
+    <TextView
+        android:id="@+id/text_allergies_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Allergies"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginTop="32dp"
+        app:layout_constraintTop_toBottomOf="@id/button_back"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <CheckBox
+        android:id="@+id/check_dairy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Dairy"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/text_allergies_title"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <CheckBox
+        android:id="@+id/check_gluten"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Gluten"
+        app:layout_constraintTop_toBottomOf="@id/check_dairy"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <CheckBox
+        android:id="@+id/check_nuts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nuts"
+        app:layout_constraintTop_toBottomOf="@id/check_gluten"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <CheckBox
+        android:id="@+id/check_shellfish"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Shellfish"
+        app:layout_constraintTop_toBottomOf="@id/check_nuts"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <CheckBox
+        android:id="@+id/check_soy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Soy"
+        app:layout_constraintTop_toBottomOf="@id/check_shellfish"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- Cuisine Preferences Section -->
+    <TextView
+        android:id="@+id/text_cuisine_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cuisine Preferences"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@id/check_soy"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chip_group_cuisine"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:chipSpacingHorizontal="8dp"
+        app:layout_constraintTop_toBottomOf="@id/text_cuisine_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip_italian"
+        style="@style/Widget.MaterialComponents.Chip.Choice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Italian"/>
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip_mexican"
+        style="@style/Widget.MaterialComponents.Chip.Choice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mexican"/>
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip_indian"
+        style="@style/Widget.MaterialComponents.Chip.Choice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Indian"/>
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip_japanese"
+        style="@style/Widget.MaterialComponents.Chip.Choice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Japanese"/>
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip_mediterranean"
+        style="@style/Widget.MaterialComponents.Chip.Choice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mediterranean"/>
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip_vegan"
+        style="@style/Widget.MaterialComponents.Chip.Choice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Vegan"/>
+    </com.google.android.material.chip.ChipGroup>
+
+    <!-- Ingredients Section -->
+    <TextView
+        android:id="@+id/text_ingredients_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ingredients"
+        android:textSize="18sp"
+        android:textColor="@color/text_primary"
+        android:textStyle="bold"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@id/chip_group_cuisine"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/edit_text_ingredients"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Add ingredients you like or dislike"
+        android:background="@drawable/edit_text"
+        android:padding="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/text_ingredients_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- Save Preferences Button -->
+    <Button
+        android:id="@+id/button_save"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Save Preferences"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
