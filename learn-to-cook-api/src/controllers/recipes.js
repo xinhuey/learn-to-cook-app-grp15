@@ -17,6 +17,8 @@ export const getRecipes = async (c) => {
     if (!result.success) {
       return c.json({ error: result.error }, 400)
     }
+
+    console.log(result.data)
     
     return c.json(result.data)
   } catch (error) {
