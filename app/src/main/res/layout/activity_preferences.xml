@@ -120,47 +120,103 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-    <com.google.android.material.chip.Chip
-        android:id="@+id/chip_italian"
-        style="@style/Widget.MaterialComponents.Chip.Choice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Italian"/>
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_american"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="American" />
 
-    <com.google.android.material.chip.Chip
-        android:id="@+id/chip_mexican"
-        style="@style/Widget.MaterialComponents.Chip.Choice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Mexican"/>
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_chinese"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Chinese" />
 
-    <com.google.android.material.chip.Chip
-        android:id="@+id/chip_indian"
-        style="@style/Widget.MaterialComponents.Chip.Choice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Indian"/>
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_french"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="French" />
 
-    <com.google.android.material.chip.Chip
-        android:id="@+id/chip_japanese"
-        style="@style/Widget.MaterialComponents.Chip.Choice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Japanese"/>
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_greek"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Greek" />
 
-    <com.google.android.material.chip.Chip
-        android:id="@+id/chip_mediterranean"
-        style="@style/Widget.MaterialComponents.Chip.Choice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Mediterranean"/>
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_indian"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Indian" />
 
-    <com.google.android.material.chip.Chip
-        android:id="@+id/chip_vegan"
-        style="@style/Widget.MaterialComponents.Chip.Choice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Vegan"/>
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_italian"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Italian" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_japanese"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Japanese" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_korean"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Korean" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_mediterranean"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mediterranean" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_mexican"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mexican" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_middle_eastern"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Middle Eastern" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_spanish"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Spanish" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_thai"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Thai" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_vietnamese"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Vietnamese" />
     </com.google.android.material.chip.ChipGroup>
 
     <!-- Ingredients Section -->
@@ -186,7 +242,7 @@
         android:layout_marginTop="8dp"
         app:layout_constraintTop_toBottomOf="@id/text_ingredients_title"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- Save Preferences Button -->
     <Button

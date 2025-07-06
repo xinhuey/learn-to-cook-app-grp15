@@ -6,13 +6,20 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.learntocook.databinding.ItemRecipeBinding
 
-class RecipeAdapter(private val recipes: List<Recipe>) :
+class RecipeAdapter(
+    private var recipes: List<Recipe>,
+    private val onRecipeClick : (Recipe) -> Unit
+) :
     RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder>() {
 
     inner class RecipeViewHolder(private val binding: ItemRecipeBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(recipe: Recipe) {
             binding.textViewRecipeTitle.text = recipe.title
+            binding.textViewRecipeDescription.text = recipe.description ?: ""
+            binding.textViewRecipeCuisine.text = recipe.cuisine
+            binding.textViewRecipeDifficulty.text = recipe.difficulty
+            binding.textViewRecipeAuthor.text = recipe.author?.full_name?.let { "By $it" } ?: ""
         }
     }
 
@@ -25,8 +32,15 @@ class RecipeAdapter(private val recipes: List<Recipe>) :
     }
 
     override fun onBindViewHolder(holder: RecipeViewHolder, position: Int) {
-        holder.bind(recipes[position])
+        val recipe = recipes[position]
+        holder.bind(recipe)
+        holder.itemView.setOnClickListener{ onRecipeClick(recipe) }
     }
 
     override fun getItemCount() = recipes.size
+
+    fun updateRecipes(newRecipes: List<Recipe>) {
+        recipes = newRecipes
+        notifyDataSetChanged()
+    }
 }
