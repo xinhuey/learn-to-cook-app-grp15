@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.learntocook.databinding.ItemRecipeBinding
+import com.squareup.picasso.Picasso
 
 class RecipeAdapter(
     private var recipes: List<Recipe>,
@@ -20,6 +21,13 @@ class RecipeAdapter(
             binding.textViewRecipeCuisine.text = recipe.cuisine
             binding.textViewRecipeDifficulty.text = recipe.difficulty
             binding.textViewRecipeAuthor.text = recipe.author?.full_name?.let { "By $it" } ?: ""
+            val url = recipe.imageUrls?.firstOrNull()
+            if (url != null){
+                Picasso.get().load(url).into(binding.imageViewRecipe)
+            }
+            else{
+                binding.imageViewRecipe.setImageDrawable(null)
+            }
         }
     }
 

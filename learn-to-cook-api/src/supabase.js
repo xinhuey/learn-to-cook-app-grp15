@@ -382,6 +382,29 @@ export function createRecipeHelpers(supabase) {
       }
     },
 
+    async uploadRecipeImage(file, filename){
+        try{
+            const path = `public/${filename}`
+
+            const {data, error} = await supabase
+                .storage
+                .from('recipe-images')
+                .upload(path, file)
+
+                if(error) throw error
+
+                const{ data : urlData} = supabase
+                    .storage
+                    .from('recipe-images')
+                    .getPublicUrl(data.path)
+                return {success: true, data: urlData.publicUrl}
+
+        } catch(error){
+        return {success: false, error: error.message}
+        }
+        }
+    },
+
     async insertReview(reviewData) {
       try {
         const { data, error } = await supabase

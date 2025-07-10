@@ -16,6 +16,14 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <ImageView
+            android:id="@+id/imageViewRecipe"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/recipe_image"
+            android:layout_marginBottom="8dp" />
+
         <TextView
             android:id="@+id/textViewRecipeTitle"
             android:layout_width="match_parent"
