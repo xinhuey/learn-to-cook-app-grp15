@@ -60,6 +60,10 @@ class LandingActivity : AppCompatActivity() {
             preferencesLauncher.launch(intent)
         }
 
+        binding.fabCreatePost.setOnClickListener{
+            startActivity(Intent(this, CreateBlogPostActivity::class.java))
+        }
+
         // fetch recipes from backend API with preferences
         fetchRecipesFromApi()
 

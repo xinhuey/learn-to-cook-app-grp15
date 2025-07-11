@@ -16,4 +16,6 @@
     <string name="nav_hamburger_desc">Open navigation</string>
     <string name="back">Back</string>
     <string name="recipe_image">Recipe image</string>
+    <string name="create_blog_post">Create Blog Post</string>
+    <string name="post">Post</string>
 </resources>
