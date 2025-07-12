@@ -20,9 +20,13 @@ class CreateBlogPostActivity : AppCompatActivity() {
 
         binding.buttonPost.setOnClickListener{
             val title = binding.editTitle.text.toString().trim()
-            val content = binding.editContent.text.toString().trim()
+            val description = binding.editDescription.text.toString().trim()
+            val ingredients = binding.editIngredients.text.toString().trim()
+            val instructions = binding.editInstructions.text.toString().trim()
 
-            if (title.isEmpty() || content.isEmpty()){
+            if (title.isEmpty() || description.isEmpty() || ingredients.isEmpty()
+                || instructions.isEmpty()){
+
                 Toast.makeText(this, "Please fill out all fields", Toast.LENGTH_SHORT).show()
 
                 return@setOnClickListener
