@@ -8,6 +8,7 @@ import androidx.core.app.ActivityCompat
 import com.google.android.material.chip.Chip
 import android.util.Base64
 import androidx.activity.result.contract.ActivityResultContracts
+import com.example.learntocook.AuthManager
 import com.example.learntocook.databinding.ActivityCreateBlogPostBinding
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
@@ -57,8 +58,7 @@ class CreateBlogPostActivity : AppCompatActivity() {
             } else {
                 ""
             }
-            if (title.isEmpty() || description.isEmpty() || ingredients.isEmpty()
-                || cuisine.isEmpty() || instructions.isEmpty() ||selectedImageUri == null){
+            if (title.isEmpty()){
 
                 Toast.makeText(this, "Please fill out all fields", Toast.LENGTH_SHORT).show()
 
@@ -75,16 +75,21 @@ class CreateBlogPostActivity : AppCompatActivity() {
                 put("cuisine", cuisine)
                 put("ingredients", JSONArray(ingredients.split('\n').map { it.trim() }.filter { it.isNotEmpty() }))
                 put("instructions", JSONArray(instructions.split('\n').map { it.trim() }.filter { it.isNotEmpty() }))
-                imageBase64?.let {
-                    put("image_urls", JSONArray().put(it))
-                }
+//                imageBase64?.let {
+//                    put("image_urls", JSONArray().put(it))
+//                }
             }
 
-            val requestBody = json.toString().toRequestBody("application/json".toMediaType())
-            val request = Request.Builder()
+            val body = json.toString().toRequestBody("application/json".toMediaType())
+            val requestBuilder = Request.Builder()
                 .url("$BASE_API_URL/recipes")
-                .post(requestBody)
-                .build()
+                .post(body)
+            // add bearer token if available
+            AuthManager.getToken(this)?.let { token ->
+                requestBuilder.addHeader("Authorization", "Bearer $token")
+            }
+
+            val request = requestBuilder.build()
 
             binding.buttonPost.isEnabled = false
 
