@@ -21,6 +21,7 @@
     <string name="description_hint">Recipe Description</string>
     <string name="ingredients_hint">Ingredients....</string>
     <string name="instructions_hint">Instructions</string>
+    <string name="cuisine_hint">Cuisine Type</string>
     <string name="upload_image">Upload Image</string>
 
 
