@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.learntocook.databinding.RecipeDetailsBinding
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.squareup.picasso.Picasso
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -55,6 +56,13 @@ class RecipeDetailActivity : AppCompatActivity() {
         binding.textDifficulty.text = recipe.difficulty.ifEmpty { "Difficulty N/A" }
         binding.textDescription.text = recipe.description ?: ""
         binding.textAuthor.text = recipe.author?.full_name?.let { "By $it" } ?: ""
+
+        val url = recipe.imageUrls?.firstOrNull()
+        if (url != null) {
+            Picasso.get().load(url).into(binding.imageRecipe)
+        } else {
+            binding.imageRecipe.setImageDrawable(null)
+        }
 
         binding.textPrepTime.text = recipe.prepTime?.let { "Prep Time: $it min" } ?: ""
         binding.textServings.text = recipe.servings?.let { "Servings: $it" } ?: ""
