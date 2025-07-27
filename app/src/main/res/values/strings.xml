@@ -15,4 +15,14 @@
     <string name="ingredients">My Ingredients</string>
     <string name="nav_hamburger_desc">Open navigation</string>
     <string name="back">Back</string>
+    <string name="recipe_image">Recipe image</string>
+    <string name="create_blog_post">Create Blog Post</string>
+    <string name="post">Post</string>
+    <string name="description_hint">Recipe Description</string>
+    <string name="ingredients_hint">Ingredients....</string>
+    <string name="instructions_hint">Instructions</string>
+    <string name="cuisine_hint">Cuisine Type</string>
+    <string name="upload_image">Upload Image</string>
+
+
 </resources>
