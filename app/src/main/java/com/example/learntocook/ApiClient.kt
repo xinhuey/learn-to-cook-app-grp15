@@ -8,7 +8,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 
 object ApiClient {
-    private const val BASE_URL = "https://a847f1ec5e2d.ngrok-free.app/api"
+    private const val BASE_URL = "https://learn-to-cook-api.uwgroup15projectapp.workers.dev/api"
     private val client = OkHttpClient()
 
     fun makeRequest(

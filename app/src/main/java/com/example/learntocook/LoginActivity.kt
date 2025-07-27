@@ -65,9 +65,10 @@ class LoginActivity: AppCompatActivity() {
                         // Login successful - save user session
                         val userName = jsonResponse.optString("full_name", "User")
                         val userEmail = jsonResponse.optString("email", email)
-                        UserManager.saveUserSession(this, userEmail, userName)
+                        val isChef = jsonResponse.optBoolean("is_chef", false)
+                        UserManager.saveUserSession(this, userEmail, userName, isChef)
                         
-                        Log.d("LoginActivity", "Login successful for user: $userEmail")
+                        Log.d("LoginActivity", "Login successful for user: $userEmail, isChef: $isChef")
                         runOnUiThread {
                             startActivity(Intent(this, LandingActivity::class.java))
                             finish()

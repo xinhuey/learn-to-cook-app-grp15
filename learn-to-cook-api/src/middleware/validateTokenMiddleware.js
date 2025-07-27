@@ -5,6 +5,8 @@ export default async function validateTokenMiddleware(c, next) {
     }
     
     const uid = authHeader.substring(7).trim(); // remove "Bearer " from the start
+
+    console.log("uid in middleware: ", uid)
     
     if (!uid || uid.length === 0) {
         return c.text('Invalid user ID', 401);

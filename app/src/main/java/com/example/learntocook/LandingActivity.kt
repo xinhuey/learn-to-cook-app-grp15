@@ -60,8 +60,15 @@ class LandingActivity : AppCompatActivity() {
             preferencesLauncher.launch(intent)
         }
 
-        binding.fabCreatePost.setOnClickListener{
-            startActivity(Intent(this, CreateBlogPostActivity::class.java))
+        // only show the create post button if user is a chef
+        val isChef = UserManager.getCurrentUserIsChef(this)
+        if (isChef) {
+            binding.fabCreatePost.visibility = android.view.View.VISIBLE
+            binding.fabCreatePost.setOnClickListener{
+                startActivity(Intent(this, CreateBlogPostActivity::class.java))
+            }
+        } else {
+            binding.fabCreatePost.visibility = android.view.View.GONE
         }
 
         // fetch recipes from backend API with preferences

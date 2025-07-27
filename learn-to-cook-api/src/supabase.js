@@ -402,7 +402,6 @@ export function createRecipeHelpers(supabase) {
         } catch(error){
         return {success: false, error: error.message}
         }
-        }
     },
 
     async insertReview(reviewData) {
