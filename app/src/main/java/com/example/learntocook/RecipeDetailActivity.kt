@@ -8,23 +8,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.learntocook.databinding.RecipeDetailsBinding
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import okhttp3.*
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
-import java.io.IOException
 import java.util.*
 
 class RecipeDetailActivity : AppCompatActivity() {
     private lateinit var binding: RecipeDetailsBinding
     private lateinit var reviewAdapter: ReviewAdapter
-    private val client = OkHttpClient()
     private val gson = Gson()
     private var currentRecipe: Recipe? = null
-
-    companion object {
-        private const val BASE_API_URL = "https://learn-to-cook-api.uwgroup15projectapp.workers.dev/api"
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,40 +72,26 @@ class RecipeDetailActivity : AppCompatActivity() {
     }
 
     private fun fetchReviews(recipeId: String) {
-        val url = "$BASE_API_URL/recipes/$recipeId/reviews"
-        val request = Request.Builder()
-            .url(url)
-            .build()
-
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                runOnUiThread {
-                    Log.e("RecipeDetailActivity", "Failed to fetch reviews", e)
-                    // Don't show error toast - reviews are optional
-                }
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                response.use {
-                    if (response.isSuccessful) {
-                        response.body?.string()?.let { responseBody ->
-                            try {
-                                val reviewListType = object : TypeToken<List<Review>>() {}.type
-                                val reviews: List<Review> = gson.fromJson(responseBody, reviewListType)
-                                runOnUiThread {
-                                    reviewAdapter.updateReviews(reviews)
-                                    Log.d("RecipeDetailActivity", "Loaded ${reviews.size} reviews")
-                                }
-                            } catch (e: Exception) {
-                                Log.e("RecipeDetailActivity", "Failed to parse reviews", e)
-                            }
-                        }
-                    } else {
-                        Log.d("RecipeDetailActivity", "No reviews found for recipe")
+        ApiClient.makeRequest(
+            context = this,
+            endpoint = "/recipes/$recipeId/reviews",
+            onSuccess = { response ->
+                try {
+                    val reviewListType = object : TypeToken<List<Review>>() {}.type
+                    val reviews: List<Review> = gson.fromJson(response, reviewListType)
+                    runOnUiThread {
+                        reviewAdapter.updateReviews(reviews)
+                        Log.d("RecipeDetailActivity", "Loaded ${reviews.size} reviews")
                     }
+                } catch (e: Exception) {
+                    Log.e("RecipeDetailActivity", "Failed to parse reviews", e)
                 }
+            },
+            onError = { error ->
+                Log.e("RecipeDetailActivity", "Failed to fetch reviews: $error")
+                // Don't show error toast - reviews are optional
             }
-        })
+        )
     }
 
     private fun submitReview(recipeId: String) {
@@ -135,43 +112,33 @@ class RecipeDetailActivity : AppCompatActivity() {
         binding.buttonSubmitReview.isEnabled = false
         binding.buttonSubmitReview.text = "Submitting..."
 
-        val json = JSONObject()
-        json.put("rating", rating)
-        json.put("comment", comment)
+        val reviewData = JSONObject().apply {
+            put("rating", rating)
+            put("comment", comment)
+        }
 
-        val requestBody = json.toString().toRequestBody("application/json".toMediaType())
-        val request = Request.Builder()
-            .url("$BASE_API_URL/recipes/$recipeId/reviews")
-            .post(requestBody)
-            .build()
-
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                runOnUiThread {
-                    binding.buttonSubmitReview.isEnabled = true
-                    binding.buttonSubmitReview.text = "Submit Review"
-                    Toast.makeText(this@RecipeDetailActivity, "Failed to submit review", Toast.LENGTH_SHORT).show()
-                    Log.e("RecipeDetailActivity", "Failed to submit review", e)
-                }
-            }
-
-            override fun onResponse(call: Call, response: Response) {
+        ApiClient.makeRequest(
+            context = this,
+            endpoint = "/recipes/$recipeId/reviews",
+            method = "POST",
+            body = reviewData.toString(),
+            onSuccess = { response ->
                 runOnUiThread {
                     binding.buttonSubmitReview.isEnabled = true
                     binding.buttonSubmitReview.text = "Submit Review"
 
-                    if (response.isSuccessful) {
+                    try {
                         val newReview = Review(
                             id = "", // set in the backend later
                             recipeId = recipeId,
-                            userId = "012a66f5-96d2-427b-859c-347c67cc35ee",
+                            userId = UserManager.getCurrentUserId(this) ?: "",
                             rating = rating,
                             comment = comment,
                             createdAt = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", java.util.Locale.getDefault()).format(java.util.Date()),
                             updatedAt = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", java.util.Locale.getDefault()).format(java.util.Date()),
                             user = Author(
-                                id = "012a66f5-96d2-427b-859c-347c67cc35ee",
-                                full_name = "Demo User",
+                                id = UserManager.getCurrentUserId(this) ?: "",
+                                full_name = UserManager.getCurrentUserName(this) ?: "Demo User",
                                 profile_image_url = null
                             )
                         )
@@ -182,27 +149,23 @@ class RecipeDetailActivity : AppCompatActivity() {
                         binding.editTextReviewComment.text.clear()
                         binding.ratingBarReview.rating = 5.0f
 
-                        Toast.makeText(this@RecipeDetailActivity, "Review submitted successfully!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Review submitted successfully!", Toast.LENGTH_SHORT).show()
                         
                         fetchReviews(recipeId)
-                    } else {
-                        val errorMessage = try {
-                            val errorBody = response.body?.string()
-                            if (errorBody != null) {
-                                val errorJson = JSONObject(errorBody)
-                                errorJson.getString("error")
-                            } else {
-                                "Failed to submit review"
-                            }
-                        } catch (e: Exception) {
-                            "Failed to submit review"
-                        }
-                        
-                        Toast.makeText(this@RecipeDetailActivity, errorMessage, Toast.LENGTH_LONG).show()
-                        Log.e("RecipeDetailActivity", "Review submission failed with code: ${response.code}")
+                    } catch (e: Exception) {
+                        Log.e("RecipeDetailActivity", "Error creating review object", e)
+                        Toast.makeText(this, "Review submitted successfully!", Toast.LENGTH_SHORT).show()
                     }
                 }
+            },
+            onError = { error ->
+                runOnUiThread {
+                    binding.buttonSubmitReview.isEnabled = true
+                    binding.buttonSubmitReview.text = "Submit Review"
+                    Toast.makeText(this, "Failed to submit review: $error", Toast.LENGTH_SHORT).show()
+                    Log.e("RecipeDetailActivity", "Failed to submit review: $error")
+                }
             }
-        })
+        )
     }
 }
