@@ -277,6 +277,70 @@ android:background="@color/brand_background">
 
     </com.google.android.material.chip.ChipGroup>
 
+    <TextView
+        android:id="@+id/text_allergies"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Allergies (Select all that apply)"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/chipGroupDifficulty"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <CheckBox
+        android:id="@+id/check_dairy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Dairy"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/text_allergies"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <CheckBox
+        android:id="@+id/check_gluten"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Gluten"
+        app:layout_constraintTop_toBottomOf="@id/check_dairy"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <CheckBox
+        android:id="@+id/check_nuts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nuts"
+        app:layout_constraintTop_toBottomOf="@id/check_gluten"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <CheckBox
+        android:id="@+id/check_shellfish"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Shellfish"
+        app:layout_constraintTop_toBottomOf="@id/check_nuts"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <CheckBox
+        android:id="@+id/check_soy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Soy"
+        app:layout_constraintTop_toBottomOf="@id/check_shellfish"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/edit_other_allergies"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:hint="Other allergies (comma separated)"
+        android:background="@drawable/rounded_edittext_bg"
+        android:padding="12dp"
+        app:layout_constraintTop_toBottomOf="@id/check_soy"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/buttonPost"
         android:layout_width="0dp"
@@ -286,7 +350,7 @@ android:background="@color/brand_background">
         android:textColor="@color/text_on_brand_green"
         android:backgroundTint="@color/brand_green"
         android:background="@drawable/rounded_button_bg"
-        app:layout_constraintTop_toBottomOf="@id/chipGroupDifficulty"
+        app:layout_constraintTop_toBottomOf="@id/edit_other_allergies"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

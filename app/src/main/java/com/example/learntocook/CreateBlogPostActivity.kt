@@ -72,7 +72,22 @@ class CreateBlogPostActivity : AppCompatActivity() {
                 ""
             }
             
-            // Validation
+            // set selected allergies
+            val allergies = mutableListOf<String>()
+            if (binding.checkDairy.isChecked) allergies.add("dairy")
+            if (binding.checkGluten.isChecked) allergies.add("gluten")
+            if (binding.checkNuts.isChecked) allergies.add("nuts")
+            if (binding.checkShellfish.isChecked) allergies.add("shellfish")
+            if (binding.checkSoy.isChecked) allergies.add("soy")
+            
+            val otherAllergiesText = binding.editOtherAllergies.text.toString().trim()
+            if (otherAllergiesText.isNotEmpty()) {
+                val otherAllergies = otherAllergiesText.split(',')
+                    .map { it.trim() }
+                    .filter { it.isNotEmpty() }
+                allergies.addAll(otherAllergies)
+            }
+            
             if (title.isEmpty() || description.isEmpty() || ingredients.isEmpty() || instructions.isEmpty() || cuisine.isEmpty() || difficulty.isEmpty()) {
                 Toast.makeText(this, "Please fill out all fields", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -83,6 +98,7 @@ class CreateBlogPostActivity : AppCompatActivity() {
             Log.d("CreateBlogPost", "Instructions: $instructions")
             Log.d("CreateBlogPost", "Cuisine: $cuisine")
             Log.d("CreateBlogPost", "Difficulty: $difficulty")
+            Log.d("CreateBlogPost", "Allergies: $allergies")
 
             // Create JSON payload
             val json = JSONObject().apply{
@@ -92,6 +108,7 @@ class CreateBlogPostActivity : AppCompatActivity() {
                 put("difficulty", difficulty)
                 put("ingredients", JSONArray(ingredients))
                 put("instructions", JSONArray(instructions))
+                put("allergies_ingredients", JSONArray(allergies))
                 // Add author_id from current user
                 UserManager.getCurrentUserId(this@CreateBlogPostActivity)?.let { userId ->
                     put("author_id", userId)

@@ -25,12 +25,14 @@ export const getRecipes = async (c) => {
     const result = await recipeHelpers.searchRecipes(filters)
     
     if (!result.success) {
+      console.log("searchRecipes failed:", result.error)
       return c.json({ error: result.error }, 400)
     }
 
-    
+    console.log("searchRecipes succeeded, returning data")
     return c.json(result.data)
   } catch (error) {
+    console.log("getRecipes caught error:", error)
     return c.json({ error: 'Failed to fetch recipes' }, 500)
   }
 }
@@ -88,6 +90,11 @@ export const createRecipe = async (c) => {
     
     if (recipeData.difficulty && !validDifficulties.includes(recipeData.difficulty)) {
       return c.json({ error: 'Invalid difficulty. Must be one of: ' + validDifficulties.join(', ') }, 400)
+    }
+    
+    // Ensure allergies_ingredients is an array
+    if (recipeData.allergies_ingredients && !Array.isArray(recipeData.allergies_ingredients)) {
+      return c.json({ error: 'allergies_ingredients must be an array' }, 400)
     }
     
     recipeData.author_id = authenticatedUid
@@ -264,11 +271,21 @@ export const addRecipeReview = async (c) => {
       return c.json({ error: 'Rating and comment are required' }, 400)
     }
     
-    reviewData.recipe_id = recipeId
-    reviewData.user_id = authenticatedUid
-    
     const supabase = createSupabaseClient(c.env)
     const recipeHelpers = createRecipeHelpers(supabase)
+    
+    // Check if user is the author of the recipe
+    const recipeResult = await recipeHelpers.getRecipeById(recipeId)
+    if (!recipeResult.success) {
+      return c.json({ error: 'Recipe not found' }, 404)
+    }
+    
+    if (recipeResult.data.author_id === authenticatedUid) {
+      return c.json({ error: 'You cannot review your own recipe' }, 403)
+    }
+    
+    reviewData.recipe_id = recipeId
+    reviewData.user_id = authenticatedUid
     
     const result = await recipeHelpers.insertReview(reviewData)
     

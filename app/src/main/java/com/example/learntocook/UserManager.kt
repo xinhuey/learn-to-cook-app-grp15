@@ -19,7 +19,18 @@ object UserManager {
     // gen a unique UID based on email
     fun generateUserId(email: String): String {
         val hash = MessageDigest.getInstance("SHA-256").digest(email.toByteArray())
-        return hash.joinToString("") { "%02x".format(it) }.take(32)
+        val hashString = hash.joinToString("") { "%02x".format(it) }.take(32)
+        
+        // format UUID with dashes: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx like supabase
+        return "${hashString.substring(0, 8)}-${hashString.substring(8, 12)}-${hashString.substring(12, 16)}-${hashString.substring(16, 20)}-${hashString.substring(20, 32)}"
+    }
+
+    private fun normalizeUserId(userId: String): String {
+        return if (userId.length == 32 && !userId.contains("-")) {
+            "${userId.substring(0, 8)}-${userId.substring(8, 12)}-${userId.substring(12, 16)}-${userId.substring(16, 20)}-${userId.substring(20, 32)}"
+        } else {
+            userId
+        }
     }
 
     fun saveUserSession(context: Context, email: String, name: String, isChef: Boolean = false) {
@@ -35,7 +46,8 @@ object UserManager {
     }
 
     fun getCurrentUserId(context: Context): String? {
-        return getSharedPreferences(context).getString(KEY_USER_ID, null)
+        val userId = getSharedPreferences(context).getString(KEY_USER_ID, null)
+        return userId?.let { normalizeUserId(it) }
     }
 
     fun getCurrentUserEmail(context: Context): String? {
