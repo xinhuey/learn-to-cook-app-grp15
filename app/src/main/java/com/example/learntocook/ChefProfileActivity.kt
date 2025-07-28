@@ -1,6 +1,7 @@
 package com.example.learntocook
 
 import android.app.Activity
+import android.app.Instrumentation.ActivityResult
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
@@ -32,8 +33,15 @@ class ChefProfileActivity : AppCompatActivity() {
         }
     }
 
-    // TODO: replace with dynamic value
-//    private val LOGGED_IN_USER_ID = "chef1"
+    private val addRecipeLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            Log.d("ChefProfileActivity", "New recipe added, refreshing recipes.")
+            currAuthor?.id?.let { fetchChefRecipes(it) }
+        }
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -163,7 +171,7 @@ class ChefProfileActivity : AppCompatActivity() {
 
     private fun setupButtonClickListeners() {
 
-        binding.buttonBack.setOnClickListener() {
+        binding.buttonBack.setOnClickListener {
             finish()
         }
 
@@ -187,7 +195,8 @@ class ChefProfileActivity : AppCompatActivity() {
         // Create new recipe post
         binding.buttonAddRecipe.setOnClickListener {
             val intent = Intent(this, CreateBlogPostActivity::class.java)
-            startActivity(intent)
+            addRecipeLauncher.launch(intent)
+//            startActivity(intent)
         }
     }
 
