@@ -11,17 +11,16 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import com.google.gson.Gson
-import java.util.Date
-import java.util.Locale
-import java.text.SimpleDateFormat
 import com.example.learntocook.databinding.ActivityChefProfileBinding
 import com.google.gson.reflect.TypeToken
+import org.json.JSONArray
 
 class ChefProfileActivity : AppCompatActivity() {
     private lateinit var binding: ActivityChefProfileBinding
     private lateinit var recipeAdapter: RecipeAdapter
     private val gson = Gson()
     private var currAuthor: Author? = null
+    private var isFollowing = false
 
     // launcher to handle resutl from editing profile
     private val editProfileLauncher = registerForActivityResult(
@@ -61,14 +60,6 @@ class ChefProfileActivity : AppCompatActivity() {
 
         setupButtonClickListeners()
 
-        // tmp mock profile. TODO: replace w/ api call
-//        val mockAuthor = createMockAuthor(profileIdToDisplay)
-//        val mockRecipes = createMockRecipes(mockAuthor)
-//
-//        populateUi(mockAuthor)
-//        setupRecyclerView(mockRecipes)
-//        setupButtonClickListeners()
-
     }
 
     private fun fetchChefProfile(profileId: String) {
@@ -87,6 +78,7 @@ class ChefProfileActivity : AppCompatActivity() {
                     runOnUiThread {
                         populateUi(author)
                         fetchChefRecipes(profileId)
+                        checkFollowStatus(profileId)
                     }
                 } catch (e: Exception) {
                     Log.e("ChefProfileActivity", "Failed to parse author JSON", e)
@@ -136,6 +128,37 @@ class ChefProfileActivity : AppCompatActivity() {
 
     }
 
+    private fun checkFollowStatus(profileId: String) {
+        val loggedInUserId = UserManager.getCurrentUserId(this) ?: return
+
+        val endpoint = "/users/$profileId/followers"
+
+        ApiClient.makeRequest(
+            context = this,
+            endpoint = endpoint,
+            method = "GET",
+            onSuccess = { responseBody ->
+                try {
+                    val followers = JSONArray(responseBody)
+                    for (i in 0 until followers.length()) {
+                        val follower = followers.getJSONObject(i)
+                        if (follower.getString("id") == loggedInUserId) {
+                            isFollowing = true
+                            break
+                        }
+                    }
+                    updateFollowButtonState()
+                } catch (e: Exception) {
+                    Log.e("ChefProfileActivity", "Failed to parse followers list", e)
+                }
+            },
+            onError = {
+                isFollowing = false
+                updateFollowButtonState()
+            }
+        )
+    }
+
     private fun populateUi(author: Author) {
         binding.textChefName.text = author.full_name
         binding.imageProfilePicture.setImageResource(R.drawable.ic_launcher_foreground) // TODO replace w/ actual img
@@ -152,6 +175,52 @@ class ChefProfileActivity : AppCompatActivity() {
             binding.buttonFollowOrEdit.text = "Follow"
             binding.buttonAddRecipe.visibility = View.GONE
         }
+    }
+
+    private fun updateFollowButtonState() {
+        runOnUiThread {
+            if (isFollowing) {
+                binding.buttonFollowOrEdit.text = "Unfollow"
+            } else {
+                binding.buttonFollowOrEdit.text = "Follow"
+            }
+        }
+    }
+
+    private fun handleFollowClick() {
+        val profileId = currAuthor?.id ?: return
+        binding.buttonFollowOrEdit.isEnabled = false
+
+        val endpoint = "/follow/$profileId"
+        val method = if (isFollowing) "DELETE" else "POST"
+
+        ApiClient.makeRequest(
+            context = this,
+            endpoint = endpoint,
+            method = method,
+            onSuccess = {
+                runOnUiThread {
+                    isFollowing = !isFollowing
+                    var currentFollowers = currAuthor?.followerCount ?: 0
+                    if (isFollowing) {
+                        currentFollowers++
+                    } else {
+                        currentFollowers--
+                    }
+                    currAuthor = currAuthor?.copy(followerCount = currentFollowers)
+                    binding.textFollowerCount.text = getString(R.string.follower_count_format, currentFollowers)
+
+                    updateFollowButtonState()
+                    binding.buttonFollowOrEdit.isEnabled = true
+                }
+            },
+            onError = { errorMessage ->
+                runOnUiThread {
+                    Toast.makeText(this, "Action failed: $errorMessage", Toast.LENGTH_SHORT).show()
+                    binding.buttonFollowOrEdit.isEnabled = true
+                }
+            }
+        )
     }
 
     // to display list of recipes
@@ -188,6 +257,7 @@ class ChefProfileActivity : AppCompatActivity() {
                 }
             } else {
                 // TODO: handle follow logic
+                handleFollowClick()
                 Toast.makeText(this, "$buttonText button clicked!", Toast.LENGTH_SHORT).show()
             }
         }
