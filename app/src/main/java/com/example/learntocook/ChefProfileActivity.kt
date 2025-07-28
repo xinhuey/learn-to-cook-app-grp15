@@ -1,17 +1,16 @@
 package com.example.learntocook
 
 import android.app.Activity
-import android.app.Instrumentation.ActivityResult
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import androidx.recyclerview.widget.GridLayoutManager
 import android.content.Intent
+import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import com.google.gson.Gson
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
 import com.example.learntocook.databinding.ActivityChefProfileBinding
+import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import org.json.JSONArray
 
@@ -55,9 +54,7 @@ class ChefProfileActivity : AppCompatActivity() {
         }
 
         setupRecyclerView()
-
         fetchChefProfile(profileIdToDisplay)
-
         setupButtonClickListeners()
 
     }
@@ -77,7 +74,11 @@ class ChefProfileActivity : AppCompatActivity() {
                     this.currAuthor = author
                     runOnUiThread {
                         populateUi(author)
-                        fetchChefRecipes(profileId)
+                        if (author.isChef) {
+                            fetchChefRecipes(profileId)
+                        } else {
+                            binding.progressBar.visibility = View.GONE
+                        }
                         checkFollowStatus(profileId)
                     }
                 } catch (e: Exception) {
@@ -96,7 +97,6 @@ class ChefProfileActivity : AppCompatActivity() {
                 }
             }
         )
-
     }
 
     private fun fetchChefRecipes(authorId: String) {
@@ -125,11 +125,12 @@ class ChefProfileActivity : AppCompatActivity() {
                 runOnUiThread { binding.progressBar.visibility = View.GONE }
             }
         )
-
     }
 
     private fun checkFollowStatus(profileId: String) {
         val loggedInUserId = UserManager.getCurrentUserId(this) ?: return
+
+        if (profileId == loggedInUserId) return
 
         val endpoint = "/users/$profileId/followers"
 
@@ -140,6 +141,7 @@ class ChefProfileActivity : AppCompatActivity() {
             onSuccess = { responseBody ->
                 try {
                     val followers = JSONArray(responseBody)
+                    isFollowing = false
                     for (i in 0 until followers.length()) {
                         val follower = followers.getJSONObject(i)
                         if (follower.getString("id") == loggedInUserId) {
@@ -162,27 +164,37 @@ class ChefProfileActivity : AppCompatActivity() {
     private fun populateUi(author: Author) {
         binding.textChefName.text = author.full_name
         binding.imageProfilePicture.setImageResource(R.drawable.ic_launcher_foreground) // TODO replace w/ actual img
-        binding.textFollowerCount.text = getString(R.string.follower_count_format, author.followerCount)
         binding.textChefSpecialty.text = author.specialty
+
+        if (author.isChef) {
+            binding.textFollowerCount.visibility = View.VISIBLE
+            binding.textFollowerCount.text = getString(R.string.follower_count_format, author.followerCount)
+            binding.textRecipesHeader.visibility = View.VISIBLE
+            binding.recyclerViewChefRecipes.visibility = View.VISIBLE
+        } else {
+            binding.textFollowerCount.visibility = View.GONE
+            binding.textRecipesHeader.visibility = View.GONE
+            binding.recyclerViewChefRecipes.visibility = View.GONE
+        }
 
         val loggedInUserId = UserManager.getCurrentUserId(this)
 
-        // Check if current profile belongs to the logged-in user & if they are chef
-        if (author.id == loggedInUserId && author.isChef) { // if its their own profile & they're chef they can edit
+        if (author.id == loggedInUserId) {
             binding.buttonFollowOrEdit.text = "Edit Profile"
-            binding.buttonAddRecipe.visibility = View.VISIBLE
+            binding.buttonAddRecipe.visibility = if (author.isChef) View.VISIBLE else View.GONE
         } else {
-            binding.buttonFollowOrEdit.text = "Follow"
             binding.buttonAddRecipe.visibility = View.GONE
         }
     }
 
     private fun updateFollowButtonState() {
         runOnUiThread {
-            if (isFollowing) {
-                binding.buttonFollowOrEdit.text = "Unfollow"
-            } else {
-                binding.buttonFollowOrEdit.text = "Follow"
+            if (currAuthor?.id != UserManager.getCurrentUserId(this)) {
+                if (isFollowing) {
+                    binding.buttonFollowOrEdit.text = "Unfollow"
+                } else {
+                    binding.buttonFollowOrEdit.text = "Follow"
+                }
             }
         }
     }
@@ -200,17 +212,7 @@ class ChefProfileActivity : AppCompatActivity() {
             method = method,
             onSuccess = {
                 runOnUiThread {
-                    isFollowing = !isFollowing
-                    var currentFollowers = currAuthor?.followerCount ?: 0
-                    if (isFollowing) {
-                        currentFollowers++
-                    } else {
-                        currentFollowers--
-                    }
-                    currAuthor = currAuthor?.copy(followerCount = currentFollowers)
-                    binding.textFollowerCount.text = getString(R.string.follower_count_format, currentFollowers)
-
-                    updateFollowButtonState()
+                    fetchChefProfile(profileId)
                     binding.buttonFollowOrEdit.isEnabled = true
                 }
             },
@@ -239,11 +241,9 @@ class ChefProfileActivity : AppCompatActivity() {
     }
 
     private fun setupButtonClickListeners() {
-
         binding.buttonBack.setOnClickListener {
             finish()
         }
-
 
         binding.buttonFollowOrEdit.setOnClickListener {
             val buttonText = binding.buttonFollowOrEdit.text.toString()
@@ -258,7 +258,6 @@ class ChefProfileActivity : AppCompatActivity() {
             } else {
                 // TODO: handle follow logic
                 handleFollowClick()
-                Toast.makeText(this, "$buttonText button clicked!", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -281,5 +280,4 @@ class ChefProfileActivity : AppCompatActivity() {
             isChef = true
         )
     }
-
 }
