@@ -38,10 +38,16 @@
             
         <activity
             android:name=".BlogActivity"/>
+
         <activity
             android:name=".CreateBlogPostActivity"/>
 
-        <activity android:name=".ChefProfileActivity" />
+        <activity
+            android:name=".ChefProfileActivity" />
+
+        <activity
+            android:name=".EditProfileActivity" />
+
 
 
     </application>
