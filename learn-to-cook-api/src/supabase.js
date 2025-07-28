@@ -163,12 +163,28 @@ export function createRecipeHelpers(supabase) {
           }
         }
 
-        if (filters.excludeIngredients) {
-          const allergyIngredients = filters.excludeIngredients.split(',').map(ing => ing.trim()).filter(ing => ing.length > 0)
-          if (allergyIngredients.length > 0) {
-            query = query.not('ingredients', 'ov', allergyIngredients)
+        try {
+          if (filters.excludeIngredients) {
+            console.log("Processing excludeIngredients:", filters.excludeIngredients);
+
+            const allergyIngredients = filters.excludeIngredients
+              .split(',')
+              .map(ing => ing.trim())
+              .filter(ing => ing.length > 0);
+
+            console.log("Parsed allergy ingredients:", allergyIngredients);
+
+            if (allergyIngredients.length > 0) {
+              const pgArrayString = `{${allergyIngredients.join(',')}}`;
+              console.log("Adding exclude condition with overlaps:", pgArrayString);
+
+              query = query.not('allergies_ingredients', 'ov', pgArrayString);
+            }
           }
+        } catch (error) {
+          console.log("Error in excludeIngredients:", error)
         }
+        
 
         const offset = (filters.page - 1) * filters.limit
         query = query.range(offset, offset + filters.limit - 1)
@@ -401,7 +417,6 @@ export function createRecipeHelpers(supabase) {
 
         } catch(error){
         return {success: false, error: error.message}
-        }
         }
     },
 
