@@ -1,5 +1,6 @@
 package com.example.learntocook
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -180,7 +181,9 @@ class RecipeDetailActivity : AppCompatActivity() {
                             user = Author(
                                 id = "012a66f5-96d2-427b-859c-347c67cc35ee",
                                 full_name = "Demo User",
-                                profile_image_url = null
+                                profile_image_url = null,
+                                specialty = "null"
+
                             )
                         )
                         
