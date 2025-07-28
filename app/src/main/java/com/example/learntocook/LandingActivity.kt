@@ -12,6 +12,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.util.*
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 
 class LandingActivity : AppCompatActivity() {
@@ -42,10 +43,16 @@ class LandingActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.buttonGoToProfile.setOnClickListener {
-            val intent = Intent(this, ChefProfileActivity::class.java)
-            // tmp mock values
-            intent.putExtra("CHEF_ID", "chef1")
-            startActivity(intent)
+            val loggedInUserId = UserManager.getCurrentUserId(this)
+
+            if (loggedInUserId != null) {
+                // open users profile if logged in
+                val intent = Intent(this, ChefProfileActivity::class.java)
+                intent.putExtra("CHEF_ID", loggedInUserId)
+                startActivity(intent)
+            } else {
+                Toast.makeText(this, "Please log in to view your profile.", Toast.LENGTH_SHORT).show()
+            }
         }
 
         adapter = RecipeAdapter(emptyList()) { recipe ->
