@@ -41,6 +41,13 @@ class LandingActivity : AppCompatActivity() {
         binding = ActivityLandingBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.buttonGoToProfile.setOnClickListener {
+            val intent = Intent(this, ChefProfileActivity::class.java)
+            // tmp mock values
+            intent.putExtra("CHEF_ID", "chef1")
+            startActivity(intent)
+        }
+
         adapter = RecipeAdapter(emptyList()) { recipe ->
             Log.d("LandingActivity", "Recipe clicked: ${recipe.title}")
             val intent = Intent(this, RecipeDetailActivity::class.java)
