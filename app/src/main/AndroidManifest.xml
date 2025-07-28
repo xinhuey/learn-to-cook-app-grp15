@@ -41,7 +41,9 @@
         <activity
             android:name=".CreateBlogPostActivity"/>
 
-        
+        <activity android:name=".ChefProfileActivity" />
+
+
     </application>
 
 </manifest>

@@ -23,6 +23,7 @@
     <string name="instructions_hint">Instructions</string>
     <string name="cuisine_hint">Cuisine Type</string>
     <string name="upload_image">Upload Image</string>
+    <string name="follower_count_format">%d Followers</string>
 
 
 </resources>
