@@ -48,7 +48,8 @@
         <activity
             android:name=".EditProfileActivity" />
 
-
+        <activity
+            android:name=".FindChefsActivity" />
 
     </application>
 

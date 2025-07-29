@@ -79,7 +79,6 @@ class ChefProfileActivity : AppCompatActivity() {
                         } else {
                             binding.progressBar.visibility = View.GONE
                         }
-                        checkFollowStatus(profileId)
                     }
                 } catch (e: Exception) {
                     Log.e("ChefProfileActivity", "Failed to parse author JSON", e)
@@ -132,7 +131,7 @@ class ChefProfileActivity : AppCompatActivity() {
 
         if (profileId == loggedInUserId) return
 
-        val endpoint = "/users/$profileId/followers"
+        val endpoint = "/users/$profileId/following-status"
 
         ApiClient.makeRequest(
             context = this,
@@ -140,18 +139,13 @@ class ChefProfileActivity : AppCompatActivity() {
             method = "GET",
             onSuccess = { responseBody ->
                 try {
-                    val followers = JSONArray(responseBody)
-                    isFollowing = false
-                    for (i in 0 until followers.length()) {
-                        val follower = followers.getJSONObject(i)
-                        if (follower.getString("id") == loggedInUserId) {
-                            isFollowing = true
-                            break
-                        }
-                    }
+                    val response = gson.fromJson(responseBody, Map::class.java)
+                    isFollowing = response["isFollowing"] as? Boolean ?: false
                     updateFollowButtonState()
                 } catch (e: Exception) {
-                    Log.e("ChefProfileActivity", "Failed to parse followers list", e)
+                    Log.e("ChefProfileActivity", "Failed to parse following status", e)
+                    isFollowing = false
+                    updateFollowButtonState()
                 }
             },
             onError = {
@@ -164,7 +158,9 @@ class ChefProfileActivity : AppCompatActivity() {
     private fun populateUi(author: Author) {
         binding.textChefName.text = author.full_name
         binding.imageProfilePicture.setImageResource(R.drawable.ic_launcher_foreground) // TODO replace w/ actual img
-        binding.textChefSpecialty.text = author.specialty
+        
+        val specialtyText = author.specialty ?: author.chefExpertise ?: author.skillLevel ?: author.bio ?: "Chef"
+        binding.textChefSpecialty.text = specialtyText
 
         if (author.isChef) {
             binding.textFollowerCount.visibility = View.VISIBLE
@@ -184,12 +180,15 @@ class ChefProfileActivity : AppCompatActivity() {
             binding.buttonAddRecipe.visibility = if (author.isChef) View.VISIBLE else View.GONE
         } else {
             binding.buttonAddRecipe.visibility = View.GONE
+            // Check follow status for other users
+            checkFollowStatus(author.id)
         }
     }
 
     private fun updateFollowButtonState() {
         runOnUiThread {
-            if (currAuthor?.id != UserManager.getCurrentUserId(this)) {
+            val loggedInUserId = UserManager.getCurrentUserId(this)
+            if (currAuthor?.id != loggedInUserId) {
                 if (isFollowing) {
                     binding.buttonFollowOrEdit.text = "Unfollow"
                 } else {
@@ -212,6 +211,7 @@ class ChefProfileActivity : AppCompatActivity() {
             method = method,
             onSuccess = {
                 runOnUiThread {
+                    // Refresh the entire profile to get updated follower count and follow status
                     fetchChefProfile(profileId)
                     binding.buttonFollowOrEdit.isEnabled = true
                 }
@@ -251,12 +251,14 @@ class ChefProfileActivity : AppCompatActivity() {
                 currAuthor?.let { author ->
                     val intent = Intent(this, EditProfileActivity::class.java).apply {
                         putExtra("USER_NAME", author.full_name)
-//                        putExtra("USER_SPECIALTY", author.specialty)
+                        putExtra("USER_BIO", author.bio)
+                        putExtra("USER_SKILL_LEVEL", author.skillLevel)
+                        putExtra("USER_SPECIALTY", author.specialty)
+                        putExtra("USER_CHEF_EXPERTISE", author.chefExpertise)
                     }
                     editProfileLauncher.launch(intent)
                 }
-            } else {
-                // TODO: handle follow logic
+            } else if (buttonText == "Follow" || buttonText == "Unfollow") {
                 handleFollowClick()
             }
         }
@@ -276,7 +278,10 @@ class ChefProfileActivity : AppCompatActivity() {
             full_name = "Isabella Rossi",
             profile_image_url = null,
             followerCount = 125,
+            bio = "Italian, Mediterranean",
+            skillLevel = "Expert",
             specialty = "Italian, Mediterranean",
+            chefExpertise = "Expert",
             isChef = true
         )
     }

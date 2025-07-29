@@ -47,6 +47,9 @@ class PreferencesActivity : AppCompatActivity() {
             }
         }
         editor.putString("preferred_cuisines", selectedCuisines.joinToString(","))
+        
+        editor.putBoolean("following_only", binding.checkFollowingOnly.isChecked)
+        
         val ingredients = binding.editTextIngredients.text.toString().trim()
         editor.putString("preferred_ingredients", ingredients)
 
@@ -83,8 +86,10 @@ class PreferencesActivity : AppCompatActivity() {
             }
         }
 
+        binding.checkFollowingOnly.isChecked = sharedPref.getBoolean("following_only", false)
+
         binding.editTextIngredients.setText(sharedPref.getString("preferred_ingredients", ""))
         
-        Log.d("PreferencesActivity", "Preferences loaded - Cuisines: $preferredCuisines")
+        Log.d("PreferencesActivity", "Preferences loaded - Cuisines: $preferredCuisines, Following Only: ${binding.checkFollowingOnly.isChecked}")
     }
 }
