@@ -245,13 +245,32 @@ export const getFeedRecipes = async (c) => {
     const authenticatedUid = c.get('uid')
     const page = parseInt(c.req.query('page')) || 1
     const limit = parseInt(c.req.query('limit')) || 20
+
+    
+    
+    // Get search and filter parameters
+    const search = c.req.query('search')
+    const cuisine = c.req.query('cuisine')
+    const difficulty = c.req.query('difficulty')
+    const ingredients = c.req.query('ingredients')
+    const excludeIngredients = c.req.query('exclude_ingredients')
+    
+    const filters = {
+      search,
+      cuisine,
+      difficulty,
+      ingredients,
+      excludeIngredients,
+      page,
+      limit
+    }
     
     const supabase = createSupabaseClient(c.env)
     const recipeHelpers = createRecipeHelpers(supabase)
-    
-    const result = await recipeHelpers.getFeedRecipes(authenticatedUid, page, limit)
+    const result = await recipeHelpers.getFeedRecipesWithFilters(authenticatedUid, filters)
     
     if (!result.success) {
+      console.error(result.error)
       return c.json({ error: result.error }, 400)
     }
     
@@ -437,5 +456,50 @@ export const getRecipeCategories = async (c) => {
     return c.json(result.data)
   } catch (error) {
     return c.json({ error: 'Failed to fetch recipe categories' }, 500)
+  }
+}
+
+export const getAllChefs = async (c) => {
+  try {
+    const page = parseInt(c.req.query('page')) || 1
+    const limit = parseInt(c.req.query('limit')) || 20
+    
+    const supabase = createSupabaseClient(c.env)
+    const recipeHelpers = createRecipeHelpers(supabase)
+    
+    const result = await recipeHelpers.getAllChefs(page, limit)
+    
+    if (!result.success) {
+      return c.json({ error: result.error }, 400)
+    }
+    
+    return c.json(result.data)
+  } catch (error) {
+    return c.json({ error: 'Failed to fetch chefs' }, 500)
+  }
+}
+
+export const searchChefs = async (c) => {
+  try {
+    const searchQuery = c.req.query('q')
+    const page = parseInt(c.req.query('page')) || 1
+    const limit = parseInt(c.req.query('limit')) || 20
+    
+    if (!searchQuery) {
+      return c.json({ error: 'Search query is required' }, 400)
+    }
+    
+    const supabase = createSupabaseClient(c.env)
+    const recipeHelpers = createRecipeHelpers(supabase)
+    
+    const result = await recipeHelpers.searchChefs(searchQuery, page, limit)
+    
+    if (!result.success) {
+      return c.json({ error: result.error }, 400)
+    }
+    
+    return c.json(result.data)
+  } catch (error) {
+    return c.json({ error: 'Failed to search chefs' }, 500)
   }
 } 

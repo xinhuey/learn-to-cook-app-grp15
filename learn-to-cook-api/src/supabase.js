@@ -63,6 +63,37 @@ export function createUserHelpers(supabase) {
     }
   },
 
+  async getUserByIdWithFollowerCount(userId) {
+    try {
+      // Get user data
+      const { data: userData, error: userError } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', userId)
+        .single()
+
+      if (userError) throw userError
+
+      // Get follower count
+      const { count: followerCount, error: countError } = await supabase
+        .from('user_follows')
+        .select('*', { count: 'exact', head: true })
+        .eq('following_id', userId)
+
+      if (countError) throw countError
+
+      // Add follower count to user data
+      const userWithFollowerCount = {
+        ...userData,
+        follower_count: followerCount || 0
+      }
+
+      return { success: true, data: userWithFollowerCount }
+    } catch (error) {
+      return { success: false, error: error.message }
+    }
+  },
+
   async getUserByEmail(email) {
     try {
       const { data, error } = await supabase
@@ -398,6 +429,139 @@ export function createRecipeHelpers(supabase) {
       }
     },
 
+    async getFeedRecipesWithFilters(userId, filters) {
+      try {
+        
+        // First, get the list of users that the current user follows
+        const { data: followingData, error: followingError } = await supabase
+          .from('user_follows')
+          .select('following_id')
+          .eq('follower_id', userId)
+
+        if (followingError) {
+          console.error('Error getting following IDs:', followingError)
+          throw followingError
+        }
+
+        
+        if (!followingData || followingData.length === 0) {
+          return { success: true, data: [] }
+        }
+
+        // Extract the following IDs
+        const followingIds = followingData.map(item => item.following_id)
+        
+        let query = supabase
+          .from('recipes')
+          .select(`
+            *,
+            author:users!recipes_author_id_fkey(id, full_name, profile_image_url),
+            recipe_reviews(rating)
+          `)
+          .in('author_id', followingIds)
+
+
+        // Apply filters
+        if (filters.cuisine) {
+          query = query.eq('cuisine', filters.cuisine)
+        }
+
+        if (filters.difficulty) {
+          query = query.eq('difficulty', filters.difficulty)
+        }
+
+        if (filters.search) {
+          const searchTerms = filters.search.toLowerCase().split(/[,\s]+/).filter(term => term.trim().length > 0)
+          
+          if (searchTerms.length > 0) {
+            const searchConditions = searchTerms.map(term => 
+              `title.ilike.%${term}%,description.ilike.%${term}%,ingredients.cs.{${term}}`
+            ).join(',')
+            
+            query = query.or(searchConditions)
+          }
+        }
+
+        if (filters.ingredients) {
+          const preferredIngredients = filters.ingredients.split(',').map(ing => ing.trim()).filter(ing => ing.length > 0)
+          if (preferredIngredients.length > 0) {
+            query = query.overlaps('ingredients', preferredIngredients)
+          }
+        }
+
+        if (filters.excludeIngredients) {
+          const allergyIngredients = filters.excludeIngredients
+            .split(',')
+            .map(ing => ing.trim())
+            .filter(ing => ing.length > 0)
+
+          if (allergyIngredients.length > 0) {
+            const pgArrayString = `{${allergyIngredients.join(',')}}`
+            query = query.not('allergies_ingredients', 'ov', pgArrayString)
+          }
+        }
+
+        const offset = (filters.page - 1) * filters.limit
+        
+        query = query
+          .order('created_at', { ascending: false })
+          .range(offset, offset + filters.limit - 1)
+
+        const { data, error } = await query
+
+        if (error) {
+          console.error('Query error:', error)
+          throw error
+        }
+
+
+        if (!Array.isArray(data)) {
+          console.error('Data is not an array:', typeof data, data)
+          throw new Error('Expected array of recipes but got: ' + typeof data)
+        }
+
+        const recipesWithRatings = data.map((recipe, index) => {
+          
+          if (!recipe) {
+            return null
+          }
+
+          if (!recipe.recipe_reviews) {
+            return {
+              ...recipe,
+              average_rating: 0,
+              review_count: 0
+            }
+          }
+
+          if (!Array.isArray(recipe.recipe_reviews)) {
+            return {
+              ...recipe,
+              average_rating: 0,
+              review_count: 0
+            }
+          }
+
+          const average_rating = recipe.recipe_reviews.length > 0 
+            ? recipe.recipe_reviews.reduce((sum, review) => {
+                return sum + (review?.rating || 0)
+              }, 0) / recipe.recipe_reviews.length
+            : 0
+
+
+          return {
+            ...recipe,
+            average_rating,
+            review_count: recipe.recipe_reviews.length
+          }
+        }).filter(recipe => recipe !== null)
+
+        return { success: true, data: recipesWithRatings }
+      } catch (error) {
+        return { success: false, error: error.message }
+      }
+    },
+
     async uploadRecipeImage(file, filename){
         try{
             const path = `public/${filename}`
@@ -506,6 +670,87 @@ export function createRecipeHelpers(supabase) {
 
         if (error) throw error
         return { success: true, data: data.map(item => item.follower) }
+      } catch (error) {
+        return { success: false, error: error.message }
+      }
+    },
+
+    async isUserFollowing(followerId, followingId) {
+      try {
+        const { data, error } = await supabase
+          .from('user_follows')
+          .select('id')
+          .eq('follower_id', followerId)
+          .eq('following_id', followingId)
+          .single()
+
+        if (error && error.code !== 'PGRST116') { // PGRST116 is "not found" error
+          throw error
+        }
+        
+        return { success: true, data: { isFollowing: !!data } }
+      } catch (error) {
+        return { success: false, error: error.message }
+      }
+    },
+
+    async getFollowerCount(userId) {
+      try {
+        const { count, error } = await supabase
+          .from('user_follows')
+          .select('*', { count: 'exact', head: true })
+          .eq('following_id', userId)
+
+        if (error) throw error
+        return { success: true, data: { followerCount: count || 0 } }
+      } catch (error) {
+        return { success: false, error: error.message }
+      }
+    },
+
+    async getAllChefs(page, limit) {
+      try {
+        const offset = (page - 1) * limit
+        const { data: chefs, error } = await supabase
+          .from('users')
+          .select('id, full_name, profile_image_url, bio, skill_level, specialty, chef_expertise, is_chef')
+          .eq('is_chef', true)
+          .range(offset, offset + limit - 1)
+        if (error) throw error
+        const chefsWithFollowers = await Promise.all(
+          chefs.map(async (chef) => {
+            const followerResult = await this.getFollowerCount(chef.id)
+            return {
+              ...chef,
+              follower_count: followerResult.success ? followerResult.data.followerCount : 0
+            }
+          })
+        )
+        return { success: true, data: chefsWithFollowers }
+      } catch (error) {
+        return { success: false, error: error.message }
+      }
+    },
+    async searchChefs(searchQuery, page, limit) {
+      try {
+        const offset = (page - 1) * limit
+        const { data: chefs, error } = await supabase
+          .from('users')
+          .select('id, full_name, profile_image_url, bio, skill_level, specialty, chef_expertise, is_chef')
+          .eq('is_chef', true)
+          .or(`full_name.ilike.%${searchQuery}%,bio.ilike.%${searchQuery}%,specialty.ilike.%${searchQuery}%,chef_expertise.ilike.%${searchQuery}%`)
+          .range(offset, offset + limit - 1)
+        if (error) throw error
+        const chefsWithFollowers = await Promise.all(
+          chefs.map(async (chef) => {
+            const followerResult = await this.getFollowerCount(chef.id)
+            return {
+              ...chef,
+              follower_count: followerResult.success ? followerResult.data.followerCount : 0
+            }
+          })
+        )
+        return { success: true, data: chefsWithFollowers }
       } catch (error) {
         return { success: false, error: error.message }
       }

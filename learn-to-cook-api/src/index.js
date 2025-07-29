@@ -1,5 +1,5 @@
 import { Hono } from 'hono'
-import { createSupabaseClient, createUserHelpers } from './supabase.js'
+import { createSupabaseClient, createUserHelpers, createRecipeHelpers } from './supabase.js'
 import validateTokenMiddleware from './middleware/validateTokenMiddleware.js'
 import {
   getRecipes,
@@ -16,7 +16,9 @@ import {
   getUserFollowers,
   getUserRecipes,
   getAvailableCuisines,
-  getRecipeCategories
+  getRecipeCategories,
+  getAllChefs,
+  searchChefs
 } from './controllers/recipes.js'
 
 const app = new Hono()
@@ -143,7 +145,7 @@ app.get('/api/users/:id', async (c) => {
   const supabase = createSupabaseClient(c.env)
   const userHelpers = createUserHelpers(supabase)
   
-  const result = await userHelpers.getUserById(userId)
+  const result = await userHelpers.getUserByIdWithFollowerCount(userId)
   
   if (!result.success) {
     return c.json({ error: result.error }, 400)
@@ -182,8 +184,8 @@ app.put('/api/users/:id', async (c) => {
     const userHelpers = createUserHelpers(supabase)
     
     const result = await userHelpers.updateUser(userId, updates)
-    
     if (!result.success) {
+      console.error('Error updating user:', result.error)
       return c.json({ error: result.error }, 400)
     }
     
@@ -257,6 +259,32 @@ app.get('/api/recipes/:id/reviews', getRecipeReviews)
 app.post('/api/follow/:userId', followUser)
 app.delete('/api/follow/:userId', unfollowUser)
 app.get('/api/users/:userId/followers', getUserFollowers)
+
+// Check if authenticated user is following a specific user
+app.get('/api/users/:userId/following-status', async (c) => {
+  try {
+    const targetUserId = c.req.param('userId')
+    const authenticatedUid = c.get('uid')
+    
+    const supabase = createSupabaseClient(c.env)
+    const recipeHelpers = createRecipeHelpers(supabase)
+    
+    const result = await recipeHelpers.isUserFollowing(authenticatedUid, targetUserId)
+    
+    if (!result.success) {
+      return c.json({ error: result.error }, 400)
+    }
+    
+    return c.json(result.data)
+  } catch (error) {
+    return c.json({ error: 'Failed to check following status' }, 500)
+  }
+})
+
 app.get('/api/users/:userId/recipes', getUserRecipes)
+
+// Chef discovery endpoints
+app.get('/api/chefs', getAllChefs)
+app.get('/api/chefs/search', searchChefs)
 
 export default app
