@@ -29,27 +29,50 @@
     app:tint="?attr/colorOnSurface" />
 </com.google.android.material.card.MaterialCardView>
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/button_go_to_profile"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="16dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        app:cardCornerRadius="24dp"
-        app:cardElevation="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+<com.google.android.material.card.MaterialCardView
+    android:id="@+id/button_go_to_profile"
+    android:layout_width="48dp"
+    android:layout_height="48dp"
+    android:layout_marginTop="16dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:background="?attr/selectableItemBackgroundBorderless"
+    app:cardCornerRadius="24dp"
+    app:cardElevation="0dp"
+    app:layout_constraintEnd_toStartOf="@id/logoutButton"
+    app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="12dp"
-            android:src="@drawable/ic_profile"
-            android:contentDescription="My Profile (TEMP)"
-            app:tint="?attr/colorOnSurface" />
-    </com.google.android.material.card.MaterialCardView>
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="12dp"
+        android:src="@drawable/ic_profile"
+        android:contentDescription="My Profile (TEMP)"
+        app:tint="?attr/colorOnSurface" />
+</com.google.android.material.card.MaterialCardView>
+
+<com.google.android.material.card.MaterialCardView
+    android:id="@+id/logoutButton"
+    android:layout_width="48dp"
+    android:layout_height="48dp"
+    android:layout_marginTop="16dp"
+    android:layout_marginEnd="16dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:background="?attr/selectableItemBackgroundBorderless"
+    app:cardCornerRadius="24dp"
+    app:cardElevation="0dp"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="12dp"
+        android:src="@drawable/ic_logout"
+        android:contentDescription="Logout"
+        app:tint="?attr/colorOnSurface" />
+</com.google.android.material.card.MaterialCardView>
 
 <androidx.appcompat.widget.SearchView
     android:id="@+id/searchView"
@@ -88,11 +111,11 @@
     android:background="@drawable/button_outline_green"/>
 
 <androidx.appcompat.widget.AppCompatButton
-    android:id="@+id/logoutButton"
+    android:id="@+id/findChefsButton"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
     android:layout_weight="1"
-    android:text="Logout"
+    android:text="Find Chefs"
     android:textColor="@color/black"
     android:textSize="16sp"
     android:padding="12dp"

@@ -33,7 +33,7 @@ class RecipeDetailActivity : AppCompatActivity() {
         val recipe = Gson().fromJson(recipeJson, Recipe::class.java)
         currentRecipe = recipe
         bindRecipe(recipe)
-        
+
         // Fetch reviews separately
         fetchReviews(recipe.id)
     }
@@ -48,6 +48,16 @@ class RecipeDetailActivity : AppCompatActivity() {
         binding.textDifficulty.text = recipe.difficulty.ifEmpty { "Difficulty N/A" }
         binding.textDescription.text = recipe.description ?: ""
         binding.textAuthor.text = recipe.author?.full_name?.let { "By $it" } ?: ""
+
+        // click listener for the author
+        binding.textAuthor.setOnClickListener {
+            recipe.authorId?.let { authorId ->
+                Log.d("RecipeDetailActivity", "Navigating to profile of author ID: $authorId")
+                val intent = Intent(this, ChefProfileActivity::class.java)
+                intent.putExtra("CHEF_ID", authorId)
+                startActivity(intent)
+            }
+        }
 
         val url = recipe.imageUrls?.firstOrNull()
         if (url != null) {
@@ -77,14 +87,14 @@ class RecipeDetailActivity : AppCompatActivity() {
         val currentUserId = UserManager.getCurrentUserId(this)
         Log.d("RecipeDetailActivity", "Current User ID: $currentUserId Recipe Author ID: ${recipe.authorId}")
         val isAuthor = currentUserId == recipe.authorId
-        
+
         if (isAuthor) {
             // Hide the entire review submission card for recipe authors
             binding.cardAddReview.visibility = android.view.View.GONE
         } else {
             // Show review submission card for non-authors
             binding.cardAddReview.visibility = android.view.View.VISIBLE
-            
+
             binding.buttonSubmitReview.setOnClickListener {
                 submitReview(recipe.id)
             }
@@ -93,7 +103,7 @@ class RecipeDetailActivity : AppCompatActivity() {
 
     private fun fetchReviews(recipeId: String) {
         val endpoint = "/recipes/$recipeId/reviews"
-        
+
         ApiClient.makeRequest(
             context = this,
             endpoint = endpoint,
@@ -140,7 +150,7 @@ class RecipeDetailActivity : AppCompatActivity() {
         json.put("comment", comment)
 
         val endpoint = "/recipes/$recipeId/reviews"
-        
+
         ApiClient.makeRequest(
             context = this,
             endpoint = endpoint,
@@ -150,16 +160,16 @@ class RecipeDetailActivity : AppCompatActivity() {
                 runOnUiThread {
                     binding.buttonSubmitReview.isEnabled = true
                     binding.buttonSubmitReview.text = "Submit Review"
-                    
+
                     try {
                         val newReview = gson.fromJson(responseBody, Review::class.java)
                         reviewAdapter.addReview(newReview)
-                        
+
                         binding.editTextReviewComment.text.clear()
                         binding.ratingBarReview.rating = 5.0f
 
                         Toast.makeText(this@RecipeDetailActivity, "Review submitted successfully!", Toast.LENGTH_SHORT).show()
-                        
+
                         // Refresh reviews to get the updated list
                         fetchReviews(recipeId)
                     } catch (e: Exception) {

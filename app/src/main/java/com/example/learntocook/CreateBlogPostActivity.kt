@@ -1,4 +1,5 @@
 package com.example.learntocook
+import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -127,6 +128,7 @@ class CreateBlogPostActivity : AppCompatActivity() {
                     Log.d("CreateBlogPost", "Recipe created successfully: $response")
                     runOnUiThread {
                         Toast.makeText(this@CreateBlogPostActivity, "Recipe created successfully!", Toast.LENGTH_SHORT).show()
+                        setResult(Activity.RESULT_OK)
                         finish()
                     }
                 },

@@ -24,6 +24,7 @@
     <string name="cuisine_hint">Cuisine Type</string>
     <string name="upload_image">Upload Image</string>
     <string name="follower_count_format">%d Followers</string>
+    <string name="chef_profile_image">Chef profile image</string>
 
 
 </resources>

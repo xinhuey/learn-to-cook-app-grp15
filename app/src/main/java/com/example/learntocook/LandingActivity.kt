@@ -12,6 +12,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.util.*
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 
 class LandingActivity : AppCompatActivity() {
@@ -42,10 +43,16 @@ class LandingActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.buttonGoToProfile.setOnClickListener {
-            val intent = Intent(this, ChefProfileActivity::class.java)
-            // tmp mock values
-            intent.putExtra("CHEF_ID", "chef1")
-            startActivity(intent)
+            val loggedInUserId = UserManager.getCurrentUserId(this)
+
+            if (loggedInUserId != null) {
+                // open users profile if logged in
+                val intent = Intent(this, ChefProfileActivity::class.java)
+                intent.putExtra("CHEF_ID", loggedInUserId)
+                startActivity(intent)
+            } else {
+                Toast.makeText(this, "Please log in to view your profile.", Toast.LENGTH_SHORT).show()
+            }
         }
 
         adapter = RecipeAdapter(emptyList()) { recipe ->
@@ -61,6 +68,19 @@ class LandingActivity : AppCompatActivity() {
         binding.preferences.setOnClickListener {
             val intent = Intent(this, PreferencesActivity::class.java)
             preferencesLauncher.launch(intent)
+        }
+
+        binding.findChefsButton.setOnClickListener {
+            val intent = Intent(this, FindChefsActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.logoutButton.setOnClickListener {
+            UserManager.clearUserSession(this)
+            val intent = Intent(this, LoginActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            finish()
         }
 
         // only show the create post button if user is a chef
@@ -94,7 +114,7 @@ class LandingActivity : AppCompatActivity() {
         })
     }
 
-    private fun getUserPreferences(): Map<String, String> {
+    private fun getUserPreferences(): MutableMap<String, String> {
         val sharedPref = getSharedPreferences("user_preferences", Context.MODE_PRIVATE)
         val preferences = mutableMapOf<String, String>()
 
@@ -120,6 +140,11 @@ class LandingActivity : AppCompatActivity() {
         if (allergies.isNotEmpty()) {
             preferences["exclude_ingredients"] = allergies.joinToString(",")
         }
+
+        // Add following-only preference
+        if (sharedPref.getBoolean("following_only", false)) {
+            preferences["following_only"] = "true"
+        }
         
         Log.d("LandingActivity", "User preferences: $preferences")
         return preferences
@@ -128,6 +153,9 @@ class LandingActivity : AppCompatActivity() {
     private fun fetchRecipesFromApi(searchQuery: String? = null) {
         val preferences = getUserPreferences()
         val queryParams = mutableListOf<String>()
+        
+        val followingOnly = preferences["following_only"] == "true"
+        preferences.remove("following_only")
         
         // add user prefs as query params
         preferences.forEach { (key, value) ->
@@ -138,13 +166,15 @@ class LandingActivity : AppCompatActivity() {
             queryParams.add("search=$it")
         }
 
+        // diff endpoint based on following-only preference
+        val baseEndpoint = if (followingOnly) "/feed/recipes" else BASE_API_URL
         val endpoint = if (queryParams.isNotEmpty()) {
-            "$BASE_API_URL?${queryParams.joinToString("&")}"
+            "$baseEndpoint?${queryParams.joinToString("&")}"
         } else {
-            BASE_API_URL
+            baseEndpoint
         }
 
-        Log.d("LandingActivity", "Fetching recipes from endpoint: $endpoint")
+        Log.d("LandingActivity", "Fetching recipes from endpoint: $endpoint (following_only: $followingOnly)")
 
         ApiClient.makeRequest(
             context = this,

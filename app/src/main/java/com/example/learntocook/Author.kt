@@ -10,8 +10,14 @@ data class Author(
     val profile_image_url: String?,
     @SerializedName("follower_count")
     val followerCount: Int = 0,
+    @SerializedName("bio")
+    val bio: String?,
+    @SerializedName("skill_level")
+    val skillLevel: String?,
     @SerializedName("specialty")
     val specialty: String?,
+    @SerializedName("chef_expertise")
+    val chefExpertise: String?,
     @SerializedName("is_chef")
-    val isChef: Boolean = false // default false for reg users
+    val isChef: Boolean = false
 )
